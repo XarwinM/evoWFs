@@ -39,7 +39,7 @@ In order to learn a witness function for a new operator, we have to follow four 
 
 # Evaluation and Data
 
-The data for the training and evaluation is defined in `evoWFs/spec_new.py`. For each operator we define a `condition_creator`, e.g. `condition_creator_substring` for the `substring` operator. These are basically the generators for the training data and in many scenarios for the test data (which are of course different than the training data, but are drawn due to the same process).
+The data for the training and evaluation is defined in `evoWFs/spec_new.py`. For each operator we define a `condition_creator`, e.g. `condition_creator_substring` for the `substring` operator. These are basically the generators for the training data and in many scenarios for the test data (which are of course different than the training data, but are drawn due to the same process). Further evaluation is done in combination with the PROSE framework. The tests executed in PROSE can be found in the `c_sharp_repos` folder.
 
 
 # Statistics 
