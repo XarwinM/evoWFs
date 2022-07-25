@@ -7,9 +7,7 @@ import re
 import time
 from prettytable import PrettyTable
 
-
-# from evoWFs.results.wf_for_cs import *
-from evoWFs.results.wf_for_cs import ( # pylint: disable=unused-import
+from evoWFs.results.wf_for_cs import (  # pylint: disable=unused-import
     wf_substring_start,
     wf_substring_end,
     wf_concat_v,
@@ -17,23 +15,21 @@ from evoWFs.results.wf_for_cs import ( # pylint: disable=unused-import
     wf_abs_pos_k,
 )
 from evoWFs.type_classes import IntList, ListString
-
-# from evoWFs.text.dsl_text import *
-
 import evoWFs.spec_new as spec_new
-
 from evoWFs.text.dsl_text import substring, abs_pos, concat
 
 
 def wf_true_substring_start(input_string, out):
-    ### Has to be corrected
-    # return [input_string.index(out)]
+    """
+    Expert witness function for substring operator
+    and 'start' parameter
+    """
     return [m.start() for m in re.finditer(re.escape(out), input_string)]
 
 
-def wf_true_substring_end(input_string, start, out):
+def wf_true_substring_end(input_string, start, out):  # pylint: disable=unused-argument
     """
-    True witness function for substring operator
+    Expert witness function for substring operator
     and 'end' parameter
     """
     return [start + len(out)]
@@ -41,17 +37,25 @@ def wf_true_substring_end(input_string, start, out):
 
 def wf_true_abs_pos_k(input_string, out):
     """
-    True witness function for AbsPos operator
+    Expert witness function for AbsPos operator
     and 'end' parameter
     """
     return [out + 1, out - len(input_string) - 1]
 
 
 def wf_true_concat_v(out):
+    """
+    Expert witness function for concat operator
+    and 'first' parameter
+    """
     return [out[0:i] for i in range(1, len(out))]
 
 
 def wf_true_concat_s(input_string, out):
+    """
+    Expert witness function for concat operator
+    and 'second' parameter
+    """
     return [out[len(input_string) :]]
 
 
@@ -94,7 +98,7 @@ def measure_time(witness_function, spec_train_cond, spec_train):
     i = 0
     for j in spec_train.keys():
         start = time.time()
-        w_out = witness_function(**spec_train_cond[j])
+        witness_function(**spec_train_cond[j])
         end = time.time()
         elapsed_time += end - start
         i += 1
@@ -106,32 +110,34 @@ def measure_agnostic_recall(witness_function, spec_train_cond, spec_train, param
     """Measure agnostic recall as defined in thesis on spec_train_cond and spec_train"""
     corr = 0
     i = 0
-    for k in spec_train.keys():
-        w_out = witness_function(**spec_train_cond[k])
-        if spec_train[k][param] in w_out:
+    for j in spec_train.keys():
+        w_out = witness_function(**spec_train_cond[j])
+        if spec_train[j][param] in w_out:
             corr += 1
         i += 1
 
     return corr / i
 
 
-def jaccard_index(A, B):
+def jaccard_index(retrieved, relevant):
     """Computes the Jaccard-Index/Jaccard-Similarity between two sets"""
-    return len(set(A).intersection(set(B))) / len(set(A).union(set(B)))
+    return len(set(retrieved).intersection(set(relevant))) / len(
+        set(retrieved).union(set(relevant))
+    )
 
 
-def precision(A, B):
-    """Computes the Precision between two sets. A are retrieved documents and B relevant ones."""
-    if len(set(A)) == 0:
+def precision(retrieved, relevant):
+    """Computes the Precision between two sets."""
+    if len(set(retrieved)) == 0:
         return 0
-    return len(set(A).intersection(set(B))) / len(set(A))
+    return len(set(retrieved).intersection(set(relevant))) / len(set(retrieved))
 
 
-def recall(A, B):
-    """Computes the Recall between two sets. A are retrieved documents and B relevant ones."""
-    if len(set(A)) == 0:
+def recall(retrieved, relevant):
+    """Computes the Recall between two sets"""
+    if len(set(retrieved)) == 0:
         return 0
-    return len(set(A).intersection(set(B))) / len(set(B))
+    return len(set(retrieved).intersection(set(relevant))) / len(set(relevant))
 
 
 witness_fct_dic = {

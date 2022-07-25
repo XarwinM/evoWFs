@@ -22,7 +22,7 @@ from deap import gp
 # from typing import Dict, Tuple
 # import regex
 
-from evoWFs.type_classes import IntList, TypeConstructorFunction, t1
+from evoWFs.type_classes import IntList, TypeConstructorFunction, TypeI
 
 # from evoWFs.function_creators import *
 # import types
@@ -50,10 +50,10 @@ def create_pset(signature):
     pset.renameArguments(**signature.arg_set())
 
     t0_t0 = TypeConstructorFunction("t0_t0")
-    # t0_t1 = TypeConstructorFunction('t0_t1')
-    # t1_t1 = TypeConstructorFunction('t1_t1')
-    # pset.context["t0_t1"] = t0_t1
-    # pset.context["t1_t1"] = t1_t1
+    # t0_TypeI = TypeConstructorFunction('t0_TypeI')
+    # TypeI_TypeI = TypeConstructorFunction('TypeI_TypeI')
+    # pset.context["t0_TypeI"] = t0_TypeI
+    # pset.context["TypeI_TypeI"] = TypeI_TypeI
 
     pset.context["IntList"] = IntList  #
     pset.context["int"] = int  #

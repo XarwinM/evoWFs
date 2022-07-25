@@ -12,7 +12,7 @@ import string
 # import evoWFs.dsl
 # from evoWFs.dsl import *
 # import evoWFs.flashFill
-from evoWFs.type_classes import RegexTuple, t2
+from evoWFs.type_classes import RegexTuple, TypeII
 
 
 # Letters, Numbers and Regeluar Expression on which we operate
@@ -33,8 +33,8 @@ SPACE_DIC = {
     "str_input_2": str,
     "start": int,
     "end": int,
-    "r1": t2,
-    "r2": t2,
+    "r1": TypeII,
+    "r2": TypeII,
     "a": int,
     "b": int,
     "summand_1": int,
@@ -75,8 +75,8 @@ def sample_space(space):
         regex_1 = random.sample(regex_set, 1)[0]
         regex_2 = random.sample(regex_set, 1)[0]
         return RegexTuple(regex_1, regex_2)
-    elif space == t2:
-        regex_set = [t2(r) for r in UsefulRegexes]
+    elif space == TypeII:
+        regex_set = [TypeII(r) for r in UsefulRegexes]
         regex_1 = random.sample(regex_set, 1)[0]
         return regex_1
 

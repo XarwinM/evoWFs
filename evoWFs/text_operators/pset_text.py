@@ -4,24 +4,9 @@ to learn the witnesss function.
 The DSL is designed to learn witness functions for operators that work on text data.
 See also following https://deap.readthedocs.io/
 """
-# import operator
-
-# from deap import algorithms
-# from deap import base
-# from deap import creator
-# from deap import tools
 from deap import gp
 
-# import numpy
-
-# import copy
-
-# from typing import Dict, Tuple
-# import regex
-
-from evoWFs.type_classes import IntList, TypeConstructorFunction, ListString, t1, t2
-
-# from evoWFs.function_creators import *
+from evoWFs.type_classes import IntList, TypeConstructorFunction, ListString, TypeI, TypeII
 from evoWFs.function_creators import (
     filter_f,
     compare_f,
@@ -49,24 +34,24 @@ def create_pset(signature):
     pset.renameArguments(**signature.arg_set())
 
     t0_t0 = TypeConstructorFunction("t0_t0")
-    t0_t1 = TypeConstructorFunction("t0_t1")
-    t1_t1 = TypeConstructorFunction("t1_t1")
-    t3_t1 = TypeConstructorFunction("t3_t1")
+    t0_TypeI = TypeConstructorFunction("t0_TypeI")
+    TypeI_TypeI = TypeConstructorFunction("TypeI_TypeI")
+    t3_TypeI = TypeConstructorFunction("t3_TypeI")
     t3_t3 = TypeConstructorFunction("t3_t3")
 
     t0_t3 = TypeConstructorFunction("t0_t3")
 
     pset.context["t0_t0"] = t0_t0
-    pset.context["t0_t1"] = t0_t1
-    pset.context["t1_t1"] = t1_t1
-    pset.context["t3_t1"] = t3_t1
+    pset.context["t0_TypeI"] = t0_TypeI
+    pset.context["TypeI_TypeI"] = TypeI_TypeI
+    pset.context["t3_TypeI"] = t3_TypeI
     pset.context["t3_t3"] = t3_t3
     pset.context["t0_t3"] = t0_t3
 
-    t1_listt0 = TypeConstructorFunction("t1_listt0")
-    pset.context["t1_listt0"] = t1_listt0
+    TypeI_listt0 = TypeConstructorFunction("TypeI_listt0")
+    pset.context["TypeI_listt0"] = TypeI_listt0
     # pset.context["IntTuple"] =IntTuple
-    pset.context["t1"] = t1
+    pset.context["TypeI"] = TypeI
     pset.context["t3"] = str
     pset.context["t0_t0"] = TypeConstructorFunction("t0_t0")
     pset.context["ListString"] = ListString  #
@@ -74,8 +59,8 @@ def create_pset(signature):
     pset.addTerminal([], IntList)
     # pset.addTerminal((0,1),IntTuple)
 
-    pset.addTerminal(True, t1)
-    pset.addTerminal(False, t1)
+    pset.addTerminal(True, TypeI)
+    pset.addTerminal(False, TypeI)
 
     id_s = ident_f("id_s")
     id_sl = ident_f("id_sl")
@@ -85,7 +70,7 @@ def create_pset(signature):
     id_t0_t3 = ident_f("id_t0_t3")
 
     pset.addPrimitive(id_sl, [ListString], ListString)
-    pset.addPrimitive(id_r, [t2], t2)
+    pset.addPrimitive(id_r, [TypeII], TypeII)
     pset.addPrimitive(id_s, [str], str)
     pset.addPrimitive(id_i, [int], int)
     pset.addPrimitive(id_t0_t3, [t0_t3], t0_t3)
@@ -135,18 +120,18 @@ def create_pset(signature):
     fct_comb_s = function_comb("fct_comb_s")
     fct_comb_i = function_comb("fct_comb_i")
 
-    # pset.addPrimitive(comp_r, [t2,t2], BoolI)
-    pset.addPrimitive(comp_b, [t1], t1_t1)
-    pset.addPrimitive(comp_i, [int], t0_t1)
-    pset.addPrimitive(comp_s, [str], t3_t1)
+    # pset.addPrimitive(comp_r, [TypeII,TypeII], BoolI)
+    pset.addPrimitive(comp_b, [TypeI], TypeI_TypeI)
+    pset.addPrimitive(comp_i, [int], t0_TypeI)
+    pset.addPrimitive(comp_s, [str], t3_TypeI)
 
-    pset.addPrimitive(fct_comb_i, [int, t0_t1], t1)
-    pset.addPrimitive(fct_comb_b, [t1, t1_t1], t1)
-    pset.addPrimitive(fct_comb_s, [str, t3_t1], t1)
+    pset.addPrimitive(fct_comb_i, [int, t0_TypeI], TypeI)
+    pset.addPrimitive(fct_comb_b, [TypeI, TypeI_TypeI], TypeI)
+    pset.addPrimitive(fct_comb_s, [str, t3_TypeI], TypeI)
 
-    pset.addTerminal(comp_i(0), t0_t1)
-    pset.addTerminal(comp_b(True), t1_t1)
-    pset.addTerminal(comp_s(""), t3_t1)
+    pset.addTerminal(comp_i(0), t0_TypeI)
+    pset.addTerminal(comp_b(True), TypeI_TypeI)
+    pset.addTerminal(comp_s(""), t3_TypeI)
 
     ## Negate
     # neg = negate("neg")
@@ -155,7 +140,7 @@ def create_pset(signature):
         return -number
 
     pset.addPrimitive(neg_int, [int], int)
-    pset.addPrimitive(comp_i, [t1], t1)
+    pset.addPrimitive(comp_i, [TypeI], TypeI)
 
     ## Append
     # app_r = append_f("app_r")
@@ -170,14 +155,14 @@ def create_pset(signature):
     elem_i = element_in("elem_i")
     # elem_s = element_in('elem_s')
     # elem_r = element_in('elem_r')
-    # pset.addPrimitive(elem_i, [IntList, int], t1)
-    pset.addPrimitive(elem_i, [IntList, int], t1)
+    # pset.addPrimitive(elem_i, [IntList, int], TypeI)
+    pset.addPrimitive(elem_i, [IntList, int], TypeI)
 
     f_i = filter_f("filter_i")
     # f_r = filter_f("filter_r")
     f_s = filter_f("filter_s")
-    pset.addPrimitive(f_i, [IntList, t0_t1], IntList)
-    pset.addPrimitive(f_s, [ListString, t3_t1], ListString)
+    pset.addPrimitive(f_i, [IntList, t0_TypeI], IntList)
+    pset.addPrimitive(f_s, [ListString, t3_TypeI], ListString)
 
     def add_f_2(a, func):
         return func(a)
