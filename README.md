@@ -41,11 +41,11 @@ In order to learn a witness function for a new operator, we have to follow four 
 # Statistics 
 
 With 
-``pygount --format=summary  probWFs`` 
+``pygount --format=summary  evoWFs`` 
 I have counted the LOC of this repository and obtained 880 LOC and
 
 With 
-``python -m pylint probWFs --disable=E1101``
-I get an score of 8.93
+``python -m pylint evoWFs --disable=E1101``
+I get a score of 8.93
 
 In total I've executed 4 tests, with 27 LOC and get a coverage of 35\% (found out by we executing `coverage report -m`).
