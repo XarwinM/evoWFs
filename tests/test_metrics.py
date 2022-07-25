@@ -8,6 +8,8 @@ class TestMetrics(unittest.TestCase):
         self.assertEqual(jaccard_index({1, 2, 3}, {1, 2, 3} ), 1.0)
         self.assertEqual(jaccard_index({1, 2, 3, 4}, {1, 2} ), 0.5)
         self.assertEqual(jaccard_index({3, 4}, {1, 2}), 0.0)
+        self.assertEqual(jaccard_index({'a', 'b'}, {'c', 'd'}), 0.0)
+        self.assertEqual(jaccard_index({'a', 'b'}, {'c', 'd'}), 0.0)
 
     def test_precision(self):
         self.assertEqual(precision({1, 2, 3}, {1, 2, 3, 4} ), 1.0)

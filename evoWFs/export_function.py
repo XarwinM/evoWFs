@@ -42,9 +42,12 @@ def create_wf_file(wf_function, file_name="wf_for_cs.py"):
     interpretable
     """
 
-    preamble = "from only_dsls import *\n\n"
+    preamble = "from evoWFs.text_operators.pset_text import *\n\n"
+    preamble+= "from evoWFs.results.functions_from_pset_dsl import*\n\n"
 
     out = preamble + wf_function
 
     with open(file_name, "w") as file:
         file.write(out)
+
+    print(f"File {file_name} created")
