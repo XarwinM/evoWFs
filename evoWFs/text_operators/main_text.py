@@ -148,11 +148,11 @@ creators_dic = {
 
 if __name__ == "__main__":
 
-    operator_candidates = [[substring, "start", ["v"], str, IntList]]
-    operator_candidates.append([substring, "end", ["v", "start"], str, IntList])
-    operator_candidates.append([concat, "v", [], str, ListString])
-    operator_candidates.append([concat, "s", ["v"], str, ListString])
-    operator_candidates.append([abs_pos, "k", ["v"], int, IntList])
+    operator_candidates = [[substring, "start", ["str_input"], str, IntList]]
+    operator_candidates.append([substring, "end", ["str_input", "start"], str, IntList])
+    operator_candidates.append([concat, "str_input_1", [], str, ListString])
+    operator_candidates.append([concat, "str_input_2", ["str_input_1"], str, ListString])
+    operator_candidates.append([abs_pos, "k", ["str_input"], int, IntList])
 
     OUT = ""
     for operator_candidate in operator_candidates:

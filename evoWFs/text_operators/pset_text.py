@@ -35,9 +35,7 @@ from evoWFs.function_creators import (
     ident_f,
 )
 
-# import types
 
-# import re
 
 
 def create_pset(signature):

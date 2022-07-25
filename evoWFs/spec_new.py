@@ -28,7 +28,7 @@ def condition_creator_substring():
     str_random = create_random_str()
     start = create_random_int_substr(str_random, cond=[])
     end = create_random_int_substr(str_random, cond=[start])
-    return {'v':str_random, 'start':start,'end': end}
+    return {'str_input':str_random, 'start':start,'end': end}
 
 def condition_creator_substring_2():
     """
@@ -39,7 +39,7 @@ def condition_creator_substring_2():
     str_random = str_random+str_random +str_random
     start = create_random_int_substr(str_random, cond=[])
     end = create_random_int_substr(str_random, cond=[start])
-    return {'v':str_random, 'start':start,'end': end}
+    return {'str_input':str_random, 'start':start,'end': end}
 
 def create_random_str(min_length=2):
     """
@@ -65,7 +65,7 @@ def condition_creator_abspos():
     k = create_random_int_substr(str_random, cond=[])
     k *= (2*random.randint(0,1)-1)
 
-    return {'v':str_random,'k':k}
+    return {'str_input':str_random,'k':k}
 
 def condition_creator_concat():
     """
@@ -76,7 +76,7 @@ def condition_creator_concat():
 
     str_random_2 = create_random_str(min_length=1)
     str_random_2 = str_random_2[:random.randint(1,len(str_random_2))][:10]
-    return {'v' : str_random_1,'s' : str_random_2}
+    return {'str_input_1' : str_random_1,'str_input_2' : str_random_2}
 
 def create_conditions(operator,
         wf_parameter='k',

@@ -28,6 +28,9 @@ UsefulRegexes = [r"\w+", r"\d+", r"\s+", r".+", r"$"]
 SPACE_DIC = {
     "k": int,
     "v": str,
+    "str_input": str,
+    "str_input_1": str,
+    "str_input_2": str,
     "start": int,
     "end": int,
     "r1": t2,

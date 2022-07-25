@@ -24,8 +24,8 @@ def abs_pos(str_input, k):
 
 
 OPERATOR_PARAMETER_DIC = {
-    abs_pos: ["v", "k"],
-    substring: ["v", "start", "end"],
-    const_str: ["s"],
-    concat: ["v", "s"],
+    abs_pos: ["str_input", "k"],
+    substring: ["str_input", "start", "end"],
+    const_str: ["str_input"],
+    concat: ["str_input_1", "str_input_2"],
 }
