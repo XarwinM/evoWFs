@@ -37,6 +37,10 @@ In order to learn a witness function for a new operator, we have to follow four 
 * Define a DSL on which the evolutionary algorithm operates as e.g. in `evoWFs/math_operators/pset_math.py` 
 * Combine all three parts similar to `evoWFs/math_operators/main_math.py` `evoWFs/text_operators/main_text.py` and start the learning procedure
 
+# Evaluation and Data
+
+The data for the training and evaluation is defined in `evoWFs/spec_new.py`. For each operator we define a `condition_creator`, e.g. `condition_creator_substring` for the `substring` operator. These are basically the generators for the training data and in many scenarios for the test data (which are of course different than the training data, but are drawn due to the same process).
+
 
 # Statistics 
 

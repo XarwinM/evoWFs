@@ -28,7 +28,7 @@ def condition_creator_substring():
     end = create_random_int_substr(str_random, cond=[start])
     return {'str_input':str_random, 'start':start,'end': end}
 
-def condition_creator_substring_2():
+def condition_creator_substring_alternative():
     """
     Creates random inputs for substrings
     Each string contains at most 15 chars
