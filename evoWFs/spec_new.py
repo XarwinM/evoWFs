@@ -1,9 +1,6 @@
 import random
 import regex
 
-##import evoWFs.dsl
-##from evoWFs.dsl import *
-##import evoWFs.flashFill
 from evoWFs.type_classes import *
 
 import string

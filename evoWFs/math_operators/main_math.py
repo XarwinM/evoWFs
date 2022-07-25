@@ -40,7 +40,7 @@ import evoWFs.spec as spec
 
 from evoWFs.evaluation import Signature, Evaluation  # levenshtein
 
-from evoWFs.export_function import function_to_str
+from evoWFs.export_function import function_to_str, create_wf_file
 
 
 def create_signature(parameter, condi_params, wf_out_type, out_type):
@@ -188,8 +188,7 @@ def train(
 
 if __name__ == "__main__":
 
-    # a = [[RelPos, 'r2', ['v', 'r1'], int, RegexList]]#$,
-    a = [[addition, "b", ["a"], int, IntList]]  # $,
+    a = [[addition, "b", ["a"], int, IntList]]
 
     learned_wfs_str = ""
     for t in a:

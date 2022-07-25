@@ -4,10 +4,11 @@ For each of these operators we aim to learn a witness function
 """
 
 
-def addition(a, b):
+def addition(summand_1, summand_2):
     """Simple addition function"""
-    return a + b
+    return summand_1 + summand_2
 
 
-# OPERATOR_PARAMETER_DIC = {AbsPos: ['v', 'k'], Substring:['v', 'start', 'end'], RelPos:['v', 'rr']}
+# Parameters that describe addition-operator.
+# Slight inconsistency between naming
 OPERATOR_PARAMETER_DIC = {addition: ["a", "b"]}

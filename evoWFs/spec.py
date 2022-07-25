@@ -41,10 +41,10 @@ SPACE_DIC = {
 trainInput = {}
 for i in range(0, 70):
     trainInput[i] = ""
-    for k in random.sample(
+    for j in random.sample(
         range(0, len(LETTERS) - 1), random.randint(1, len(LETTERS) - 1)
     ):
-        trainInput[i] += LETTERS[k]
+        trainInput[i] += LETTERS[j]
 
 
 def sample_space(space):
@@ -55,25 +55,25 @@ def sample_space(space):
         One drawn element
     """
     if space == str:
-        x = ""
-        for k in random.sample(
+        str_random = ""
+        for i in random.sample(
             range(0, len(LETTERS) - 1), random.randint(1, len(LETTERS) - 1)
         ):
-            x += LETTERS[k]
-        return x
+            str_random += LETTERS[i]
+        return str_random
 
     if space == int:
         numbers = [e for e in range(10)] + [-e for e in range(1, 10)]
         return random.sample(numbers, 1)[0]
     elif space == RegexTuple:
         regex_set = [TypeRegex(r) for r in UsefulRegexes]
-        r1 = random.sample(regex_set, 1)[0]
-        r2 = random.sample(regex_set, 1)[0]
-        return RegexTuple(r1, r2)
+        regex_1 = random.sample(regex_set, 1)[0]
+        regex_2 = random.sample(regex_set, 1)[0]
+        return RegexTuple(regex_1, regex_2)
     elif space == t2:
-        regex_set = [ t2(r) for r in UsefulRegexes]
-        r1 = random.sample(regex_set, 1)[0]
-        return r1
+        regex_set = [t2(r) for r in UsefulRegexes]
+        regex_1 = random.sample(regex_set, 1)[0]
+        return regex_1
 
 
 def data_create(operator, parameters, n_samples=25):
@@ -86,7 +86,10 @@ def data_create(operator, parameters, n_samples=25):
         n_samples: Amount of input-output samples to create
 
     Return:
-        spec_train_cond: A dictionary with keys 0,1,...,n_samples where each value describes a full set of input-output of the operator. Note that the input-output set is described via a dictionary where each parameter is key to a corresponding value
+        spec_train_cond: A dictionary with keys 0,1,...,n_samples
+            where each value describes a full set of input-output of the operator.
+            Note that the input-output set is described via a dictionary
+            where each parameter is key to a corresponding value
     """
 
     spec_train_cond = {}
@@ -111,7 +114,8 @@ def create_conditions(spec_train_cond, wf_parameter="k", condi_params=[]):
             we condition the Witness Function
     Return:
         spec_train_param: Dictionary of training instances, where each training instance
-            consists of a single key-value dictionary with 'key' wf_parameter and as 'value' its corresponding value.
+            consists of a single key-value dictionary with
+            'key' wf_parameter and as 'value' its corresponding value.
         spec_train_cond: Input Training set with certain information removed;
             Data about wf_parameter and condi_params has been deleted
     """

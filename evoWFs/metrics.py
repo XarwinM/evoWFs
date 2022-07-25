@@ -9,7 +9,7 @@ from prettytable import PrettyTable
 
 
 # from evoWFs.results.wf_for_cs import *
-from evoWFs.results.wf_for_cs import (
+from evoWFs.results.wf_for_cs import ( # pylint: disable=unused-import
     wf_substring_start,
     wf_substring_end,
     wf_concat_v,
@@ -25,13 +25,13 @@ import evoWFs.spec_new as spec_new
 from evoWFs.text.dsl_text import substring, abs_pos, concat
 
 
-def wf_true_substring_start(v, out):
+def wf_true_substring_start(input_string, out):
     ### Has to be corrected
-    # return [v.index(out)]
-    return [m.start() for m in re.finditer(re.escape(out), v)]
+    # return [input_string.index(out)]
+    return [m.start() for m in re.finditer(re.escape(out), input_string)]
 
 
-def wf_true_substring_end(v, start, out):
+def wf_true_substring_end(input_string, start, out):
     """
     True witness function for substring operator
     and 'end' parameter
@@ -39,20 +39,20 @@ def wf_true_substring_end(v, start, out):
     return [start + len(out)]
 
 
-def wf_true_abs_pos_k(v, out):
+def wf_true_abs_pos_k(input_string, out):
     """
     True witness function for AbsPos operator
     and 'end' parameter
     """
-    return [out + 1, out - len(v) - 1]
+    return [out + 1, out - len(input_string) - 1]
 
 
 def wf_true_concat_v(out):
     return [out[0:i] for i in range(1, len(out))]
 
 
-def wf_true_concat_s(v, out):
-    return [out[len(v) :]]
+def wf_true_concat_s(input_string, out):
+    return [out[len(input_string) :]]
 
 
 def measure_metric(
@@ -75,31 +75,31 @@ def measure_metric(
     Return:
         metric_out: Measured metric on spec_train and spec_train_cond of witness function
     """
-    n = 0
+    i = 0
     metric_out = 0
-    for k in spec_train.keys():
+    for j in spec_train.keys():
 
-        w_out = witness_function(**spec_train_cond[k])
+        w_out = witness_function(**spec_train_cond[j])
         w_out_true = []
-        w_out_true = witness_fct_dic[operator][parameter](**spec_train_cond[k])
+        w_out_true = witness_fct_dic[operator][parameter](**spec_train_cond[j])
         metric_out += eval(metric)(w_out, w_out_true)
-        n += 1
+        i += 1
 
-    return metric_out / n
+    return metric_out / i
 
 
 def measure_time(witness_function, spec_train_cond, spec_train):
     """Measure average execution time for Witness Function wf"""
     elapsed_time = 0
-    n = 0
-    for k in spec_train.keys():
+    i = 0
+    for j in spec_train.keys():
         start = time.time()
-        w_out = witness_function(**spec_train_cond[k])
+        w_out = witness_function(**spec_train_cond[j])
         end = time.time()
         elapsed_time += end - start
-        n += 1
+        i += 1
 
-    return (elapsed_time / n) * 1000
+    return (elapsed_time / i) * 1000
 
 
 def measure_agnostic_recall(witness_function, spec_train_cond, spec_train, param):
