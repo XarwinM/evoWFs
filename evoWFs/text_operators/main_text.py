@@ -1,3 +1,8 @@
+"""
+This module allows to learn a witness function for a given function.
+As a Domain Specific Language (DSL) for the evoltionary algorithm
+we employ a DSL that operates on the text domain (see evoWFs/text_operators/pset_text.py)
+"""
 import operator
 import random
 
@@ -9,19 +14,15 @@ from deap import creator
 from deap import tools
 from deap import gp
 
+from evoWFs.text_operators.pset_text import create_pset
 
-# import sys
-# sys.path.append('..')
-
-# from flashFill import createPset
-# from regexFill import createPset
-# from regexDsl import createPset
-# from mathDSL import createPset
-from evoWFs.text_operators.pset_text import createPset
-
-# from regexFill_no_type import createPset
 from evoWFs.type_classes import IntList, ListString
-from evoWFs.text_operators.dsl_text import substring, const_str, concat, abs_pos
+from evoWFs.text_operators.dsl_text import (  # pylint: disable=unused-import
+    substring,
+    const_str,
+    concat,
+    abs_pos,
+)
 import evoWFs.spec_new as spec_new
 
 from evoWFs.evaluation import Evaluation
@@ -30,28 +31,22 @@ from evoWFs.export_function import create_wf_file, function_to_str
 
 from evoWFs.math_operators.main_math import create_signature
 
-# from evoWFs.text.pset_text import create_signature
-
 
 def function_learning(
     operator_dsl, parameter="k", condi_params=[], wf_output_type=IntList, out_type=None
 ):
+    """ """
 
-    # signatureAbsPos = Signature({'x': str, 'k': int}, str, 'x')
-    # signature = create_signature(parameter, condi_params, out_type)
+    # Create Signature of learning problem
     signature = create_signature(parameter, condi_params, wf_output_type, out_type)
 
-    # KJjisignatureAbsPos = Signature({'x': str, 'out': int}, int, 'k')
-    # signature = signatureAbsPos
-    pset = createPset(signature)
+    pset = create_pset(signature)
 
     creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
     creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
 
     toolbox = base.Toolbox()
-    # toolbox.register("expr", gp.genGrow, pset=pset, min_=1, max_=4)
     toolbox.register("expr", gp.genGrow, pset=pset, min_=1, max_=12)
-    # toolbox.register("expr", gp.genGrow, pset=pset, min_=1, max_=8)
     toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("compile", gp.compile, pset=pset)
@@ -153,23 +148,26 @@ creators_dic = {
 
 if __name__ == "__main__":
 
-    a = [[substring, "start", ["v"], str, IntList]]
-    a.append([substring, "end", ["v", "start"], str, IntList])  # works
-    a.append([concat, "v", [], str, ListString])
-    a.append([concat, "s", ["v"], str, ListString])
-    a.append([abs_pos, "k", ["v"], int, IntList])
-    # a = [[RelPos, 'r2', ['v', 'r1'], int, RegexList]]#$,
-    # Concat
+    operator_candidates = [[substring, "start", ["v"], str, IntList]]
+    operator_candidates.append([substring, "end", ["v", "start"], str, IntList])
+    operator_candidates.append([concat, "v", [], str, ListString])
+    operator_candidates.append([concat, "s", ["v"], str, ListString])
+    operator_candidates.append([abs_pos, "k", ["v"], int, IntList])
 
     OUT = ""
-    for t in a:
-        learnedWFs, signature = train(*t)
+    for operator_candidate in operator_candidates:
+        learnedWFs, signature = train(*operator_candidate)
 
         tree = gp.PrimitiveTree(learnedWFs[-1])
 
         input_vars = signature.input_types_wf.keys()
 
-        OUT += function_to_str(tree, input_vars, name=t[0].__name__, parameter=t[1])
+        OUT += function_to_str(
+            tree,
+            input_vars,
+            name=operator_candidate[0].__name__,
+            parameter=operator_candidate[1],
+        )
 
     create_wf_file(OUT)
 

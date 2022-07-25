@@ -34,6 +34,8 @@ SPACE_DIC = {
     "r2": t2,
     "a": int,
     "b": int,
+    "summand_1": int,
+    "summand_2": int,
 }
 
 

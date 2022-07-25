@@ -1,138 +1,109 @@
+"""
+This module offers different functions that draw samples
+for input values of different operators. Here we consider
+only operators of the Substring DSL (see thesis)
+"""
+
 import random
-import regex
 
-from evoWFs.type_classes import *
-
-import string
+from evoWFs.spec import LETTERS
 
 
-trainInput = {}
 
-range_int = [i for i in range(100)] + [-i for i in range(100)]
-import string
-letters = string.ascii_letters + '0123456789' + ' '+ ' ' + ' ' + ' '  + ' ' + ' ' + ' ' + '-' + ')(' + '.'
-UsefulRegexes = [r'\w+', r"\d+", r"\s+", r".+", r"$"]
-
-
-def create_random_int_substr(x, cond=[]):
+def create_random_int_substr(x_str, cond=[]):
+    """
+    Creates a random integer value which serves as
+    starting/ending position (depending on cond)
+    for the substring-operator and input x_str
+    """
     if cond == []:
-        return random.randint(0, len(x)-1)
-    if len(cond) > 0:
-        return random.randint(cond[0]+1, len(x))
+        return random.randint(0, len(x_str)-1)
+    return random.randint(cond[0]+1, len(x_str))
 
 
 def condition_creator_substring():
-    x = create_random_str()
-    a = create_random_int_substr(x, cond=[])
-    b = create_random_int_substr(x, cond=[a])
-    return {'v':x, 'start':a,'end': b}
+    """
+    Creates random inputs for substrings
+    """
+    str_random = create_random_str()
+    start = create_random_int_substr(str_random, cond=[])
+    end = create_random_int_substr(str_random, cond=[start])
+    return {'v':str_random, 'start':start,'end': end}
 
 def condition_creator_substring_2():
-    x = create_random_str()[:5]
-    x = x+x +x
-    a = create_random_int_substr(x, cond=[])
-    b = create_random_int_substr(x, cond=[a])
-    return {'v':x, 'start':a,'end': b}
+    """
+    Creates random inputs for substrings
+    Each string contains at most 15 chars
+    """
+    str_random = create_random_str()[:5]
+    str_random = str_random+str_random +str_random
+    start = create_random_int_substr(str_random, cond=[])
+    end = create_random_int_substr(str_random, cond=[start])
+    return {'v':str_random, 'start':start,'end': end}
 
 def create_random_str(min_length=2):
+    """
+    Creates random string of length min_length
+    """
 
-    chars = letters
+    chars = LETTERS
     int2char = dict(enumerate(chars))
-    char2int = {ch: ii for ii, ch in int2char.items()}
-    x = ""
-    while len(x) <= min_length:
-        for k in random.sample(range(0,len(letters)-1),random.randint(1,20)):
-            x += letters[k]
-        if len(x) > 20:
-            x = x[:random.randint(10, 20)]
+    str_random = ""
+    while len(str_random) <= min_length:
+        for k in random.sample(range(0,len(LETTERS)-1),random.randint(1,20)):
+            str_random += LETTERS[k]
+        if len(str_random) > 20:
+            str_random = str_random[:random.randint(10, 20)]
 
-    return x
+    return str_random
+
 def condition_creator_abspos():
-    x = create_random_str()
-    k = create_random_int_substr(x, cond=[])
+    """
+    Creates random inputs for abs_pos operator
+    """
+    str_random = create_random_str()
+    k = create_random_int_substr(str_random, cond=[])
     k *= (2*random.randint(0,1)-1)
 
-    return {'v':x,'k':k}
+    return {'v':str_random,'k':k}
 
 def condition_creator_concat():
-    x_1 = create_random_str(min_length=1)
-    x_1 = x_1[:random.randint(1,len(x_1))][:10]
+    """
+    Creates random inputs for concat operator
+    """
+    str_random_1 = create_random_str(min_length=1)
+    str_random_1 = str_random_1[:random.randint(1,len(str_random_1))][:10]
 
-    x_2 = create_random_str(min_length=1)
-    x_2 = x_2[:random.randint(1,len(x_2))][:10]
-    return {'v' : x_1,'s' : x_2}
+    str_random_2 = create_random_str(min_length=1)
+    str_random_2 = str_random_2[:random.randint(1,len(str_random_2))][:10]
+    return {'v' : str_random_1,'s' : str_random_2}
 
-
-
-
-#SPACE_DIC = {'k':  int, 'v': str, 'start': int, 'end': int, 'rr':RegexTuple}
-SPACE_DIC = {'k':  int, 'v': str, 'start': int, 'end': int, 'r1':t2, 'r2':t2, 'a':int, 'b':int}
-
-def sample_space(space):
-    if space == str:
-        x = ""
-        for k in random.sample(range(0,len(letters)-1),random.randint(1,len(letters)-1)):
-            x += letters[k]
-        return x
-
-    if space == int:
-        numbers = [ e for e in range(10)] + [-e for e in range(1,10)]
-        return random.sample(numbers,1)[0]
-    elif space == RegexTuple:
-        #regex_set = [RegexTuple(TypeRegex(r'\+s'), TypeRegex(r'\w+')) ,RegexTuple(TypeRegex(r''), TypeRegex(r'\w+')),
-        #    RegexTuple(TypeRegex(r''), TypeRegex(r'\s+')), RegexTuple(TypeRegex(r'\w+'), TypeRegex(r''))]
-        #regex_set = [  RegexTuple(TypeRegex(r''), TypeRegex(r'\w+'))]#, RegexTuple(TypeRegex(r''), TypeRegex(r''))]
-        #return random.sample(regex_set,1)[0]
-        regex_set = [ TypeRegex(r) for r in UsefulRegexes]#[TypeRegex(r'\w+'), TypeRegex(r'') ,TypeRegex(r'\s+'), TypeRegex(r'\d+') ,TypeRegex(r'^')]
-        r1 = random.sample(regex_set,1)[0]
-        r2 = random.sample(regex_set,1)[0]
-        return RegexTuple(r1,r2)
-    elif space == t2:
-        regex_set = [ t2(r) for r in UsefulRegexes]#[TypeRegex(r'\w+'), TypeRegex(r'') ,TypeRegex(r'\s+'), TypeRegex(r'\d+') ,TypeRegex(r'^')]
-        r1 = random.sample(regex_set,1)[0]
-        return r1
-
-#def data_create(operator, inputs, condtions, n_samples=50):
-def data_create(operator, parameters, n_samples=25):
-    specTrain= {}
-    specTrainCond = {}
-    for i in range(n_samples):
-        # Add random process
-        #specTrainCond[i] = { 'x': sample_space(space_dic[ , 'k':  }
-        #'''
-        specTrainCond[i] =  {}
-        for p in parameters:
-            specTrainCond[i][p] = sample_space(SPACE_DIC[p])
-        #if specTrainCond[i][
-
-        specTrainCond[i]['out'] = operator(**specTrainCond[i]  )
-        #'''
-        '''
-        For Regex operators???
-        a =True
-        while a: 
-            specTrainCond[i] =  {}
-            for p in parameters:
-                specTrainCond[i][p] = sample_space(SPACE_DIC[p])
-
-            specTrainCond[i]['out'] = operator(**specTrainCond[i]  )
-            if specTrainCond[i]['out'] != - 10:
-                a =False
-        '''
-        #specTrainAbsPos[i] = dsl.absPos(**specTrainAbsPosCond[i]  ) 
-    return specTrainCond 
-
-def create_conditions(operator, 
+def create_conditions(operator,
         wf_parameter='k',
         condi_params=[],
         creator='condition_creator_substring',
         n_samples=50):
-        #n_samples=150):
+    """
+    Arguments:
+        spec_train_cond: Training set to learn Witness Function,
+        wf_parameter: parameter (described as string) for which we aim
+        to learn the Witness Function,
+        condi_params: list of parameters (described as strings) on which
+            we condition the Witness Function
+    Return:
+        spec_train_param: Dictionary of training instances, where each training instance
+            consists of a single key-value dictionary with
+            'key' wf_parameter and as 'value' its corresponding value.
+        spec_train_cond: Input Training set with certain information removed;
+            Data about wf_parameter and condi_params has been deleted
+    ToDo: This function bears some similarities to the function create_conditions
+    in spec.py. Both implement the same functionalities and have to be merged at some point
+    """
 
     spec_train_param ={}
     spec_train_cond={}
     for i in range(n_samples):
-        spec_train_cond[i] = eval(creator)() 
+        spec_train_cond[i] = eval(creator)()
         spec_train_cond[i]['out'] = operator(**spec_train_cond[i]  )
     for i in spec_train_cond.keys():
         spec_train_param[i] = {}
@@ -147,5 +118,3 @@ def create_conditions(operator,
             del spec_train_cond[i][k]
 
     return spec_train_param, spec_train_cond
-
-

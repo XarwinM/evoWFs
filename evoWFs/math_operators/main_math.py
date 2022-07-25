@@ -1,7 +1,7 @@
 """
 This module allows to learn a witness function for a given function.
 As a DSL for the evolutionary algorithm we employ a DSL that is specialized in the numerical domain
-
+(see evoWFs/math_operators/pset_math.py)
 """
 
 
@@ -67,12 +67,9 @@ def function_learning(
     out_type=None,
 ):
 
-    # signatureAbsPos = Signature({'x': str, 'k': int}, str, 'x')
-    # signature = create_signature(parameter, condi_params, out_type)
+    # Create signature of learning problem
     signature = create_signature(parameter, condi_params, wf_output_type, out_type)
 
-    # KJjisignatureAbsPos = Signature({'x': str, 'out': int}, int, 'k')
-    # signature = signatureAbsPos
     pset = create_pset(signature)
 
     creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -188,7 +185,8 @@ def train(
 
 if __name__ == "__main__":
 
-    a = [[addition, "b", ["a"], int, IntList]]
+    #a = [[addition, "b", ["a"], int, IntList]]
+    a = [[addition, "summand_2", ["summand_1"], int, IntList]]
 
     learned_wfs_str = ""
     for t in a:

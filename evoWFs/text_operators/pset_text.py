@@ -4,65 +4,47 @@ to learn the witnesss function.
 The DSL is designed to learn witness functions for operators that work on text data.
 See also following https://deap.readthedocs.io/
 """
-import operator
+# import operator
 
-from deap import algorithms
-from deap import base
-from deap import creator
-from deap import tools
+# from deap import algorithms
+# from deap import base
+# from deap import creator
+# from deap import tools
 from deap import gp
 
-import numpy
+# import numpy
 
-import copy
+# import copy
 
-from typing import Dict, Tuple
-import regex
+# from typing import Dict, Tuple
+# import regex
 
 from evoWFs.type_classes import IntList, TypeConstructorFunction, ListString, t1, t2
-from evoWFs.function_creators import *
-import types
 
-import re
+# from evoWFs.function_creators import *
+from evoWFs.function_creators import (
+    filter_f,
+    compare_f,
+    function_comb,
+    append_f,
+    element_in,
+    len_f,
+    index_f,
+    add_f,
+    map_f,
+    ident_f,
+)
 
+# import types
 
-def create_map(name):
-    def map_f(liste, f):
-        return [f.f(l) for l in liste]
-
-    map_f.__name__ = name
-    return map_f
-
-
-def create_id():
-    def id_f(v):
-        return v
-
-    return id_f
-
-
-def create_select_from_list():
-    def sel(liste, index):
-        if liste == []:
-            return ""
-        if index >= 0 and index < len(liste):
-            return liste[index]
-        else:
-            return liste[0]
-
-    return sel
+# import re
 
 
-def create_to_list():
-    def to(x):
-        return [x]
+def create_pset(signature):
 
-    return to
-
-
-def createPset(signature):
-
-    pset = gp.PrimitiveSetTyped("Main", signature.get_wf_input(), signature.get_wf_output())
+    pset = gp.PrimitiveSetTyped(
+        "Main", signature.get_wf_input(), signature.get_wf_output()
+    )
     print("sig out", signature.get_wf_output())
     print("sig in ", signature.get_wf_input())
 
@@ -99,7 +81,7 @@ def createPset(signature):
 
     id_s = ident_f("id_s")
     id_sl = ident_f("id_sl")
-    id_rt = ident_f("id_rt")
+    # id_rt = ident_f("id_rt")
     id_r = ident_f("id_r")
     id_i = ident_f("id_i")
     id_t0_t3 = ident_f("id_t0_t3")
@@ -113,20 +95,15 @@ def createPset(signature):
     def create_range(i, j):
         if i <= 0 or i >= j:
             return []
-        if i > 0 and j > i:
+        elif i > 0 and j > i:
             return list(range(i, j))
-        else:
-            return []
+        return []
 
     pset.addPrimitive(create_range, [int, int], IntList)
 
     #'''
     def subset_sel(i, j):
         def new_subset(v):
-            if type(v) != str:
-                import pdb
-
-                pdb.set_trace()
             if i >= 0 and j > i and len(v) >= j:
                 return v[i:j]
             else:
@@ -138,10 +115,6 @@ def createPset(signature):
     #'''
     def subset_sel_1(v, i):
         def new_subset(j):
-            if type(v) != str:
-                import pdb
-
-                pdb.set_trace()
             if len(v) >= j and j > 0 and j >= i and i >= 0:
                 return v[i:j]
             else:
@@ -178,17 +151,17 @@ def createPset(signature):
     pset.addTerminal(comp_s(""), t3_t1)
 
     ## Negate
-    neg = negate("neg")
+    # neg = negate("neg")
 
-    def neg_int(a):
-        return -a
+    def neg_int(number):
+        return -number
 
     pset.addPrimitive(neg_int, [int], int)
     pset.addPrimitive(comp_i, [t1], t1)
 
     ## Append
-    app_r = append_f("app_r")
-    app_rt = append_f("app_rt")
+    # app_r = append_f("app_r")
+    # app_rt = append_f("app_rt")
     app_s = append_f("app_s")
     app_i = append_f("app_i")
     # pset.addPrimitive(app_rt, [RegexList, RegexTuple], RegexList)
@@ -203,7 +176,7 @@ def createPset(signature):
     pset.addPrimitive(elem_i, [IntList, int], t1)
 
     f_i = filter_f("filter_i")
-    f_r = filter_f("filter_r")
+    # f_r = filter_f("filter_r")
     f_s = filter_f("filter_s")
     pset.addPrimitive(f_i, [IntList, t0_t1], IntList)
     pset.addPrimitive(f_s, [ListString, t3_t1], ListString)
@@ -228,8 +201,8 @@ def createPset(signature):
     pset.addPrimitive(map_s, [ListString, t3_t3], ListString)
     pset.addPrimitive(map_s_i, [IntList, t0_t3], ListString)
 
-    def map_add_terminal(a):
-        return a
+    def map_add_terminal(terminal):
+        return terminal
 
     pset.addTerminal(map_add_terminal, t3_t3)
 
