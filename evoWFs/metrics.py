@@ -1,6 +1,6 @@
 """
 This module provides functions to compare learned witness functions to
-known/ground truth witness functions. Furthermore, it provides functions 
+known/ground truth witness functions. Furthermore, it provides functions
 to analyze the learned witness functions, e.g. measure execution time.
 """
 import re
@@ -10,8 +10,8 @@ from prettytable import PrettyTable
 from evoWFs.results.wf_for_cs import (  # pylint: disable=unused-import
     wf_substring_start,
     wf_substring_end,
-    wf_concat_v,
-    wf_concat_s,
+    wf_concat_first,
+    wf_concat_second,
     wf_abs_pos_k,
 )
 from evoWFs.type_classes import IntList, ListString
@@ -43,7 +43,7 @@ def wf_true_abs_pos_k(str_input, out):
     return [out + 1, out - len(str_input) - 1]
 
 
-def wf_true_concat_v(out):
+def wf_true_concat_first(out):
     """
     Expert witness function for concat operator
     and 'first' parameter
@@ -51,7 +51,7 @@ def wf_true_concat_v(out):
     return [out[0:i] for i in range(1, len(out))]
 
 
-def wf_true_concat_s(str_input_1, out):
+def wf_true_concat_second(str_input_1, out):
     """
     Expert witness function for concat operator
     and 'second' parameter
@@ -142,7 +142,7 @@ def recall(retrieved, relevant):
 
 witness_fct_dic = {
     substring: {"start": wf_true_substring_start, "end": wf_true_substring_end},
-    concat: {"str_input_1": wf_true_concat_v, "str_input_2": wf_true_concat_s},
+    concat: {"str_input_1": wf_true_concat_first, "str_input_2": wf_true_concat_second},
     abs_pos: {"k": wf_true_abs_pos_k},
 }
 
@@ -150,8 +150,8 @@ if __name__ == "__main__":
 
     a = [[substring, "start", ["str_input"], str, IntList, "substring_start"]]
     a.append([substring, "end", ["str_input", "start"], str, IntList, "substring_end"])
-    a.append([concat, "str_input_1", [], str, ListString, "concat_v"])
-    a.append([concat, "str_input_2", ["str_input_1"], str, ListString, "concat_s"])
+    a.append([concat, "str_input_1", [], str, ListString, "concat_first"])
+    a.append([concat, "str_input_2", ["str_input_1"], str, ListString, "concat_second"])
     a.append([abs_pos, "k", ["str_input"], int, IntList, "abs_pos_k"])
 
     creators_dic = {

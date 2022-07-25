@@ -24,12 +24,12 @@ def wf_substring_end(str_input, start, out): # pylint: disable=unused-argument
     return map_i(app_i([], start), add_i(len_s(out)))
 
 
-def wf_concat_v(out):
+def wf_concat_first(out):
     """Learned Witness Function"""
     return map_s_i(create_range(1, len_s(out)), subset_sel_1(out, 0))
 
 
-def wf_concat_s(str_input_1, out):
+def wf_concat_second(str_input_1, out):
     """Learned Witness Function"""
     return map_s(app_s([], out), subset_sel(len_s(str_input_1), len_s(out)))
 
