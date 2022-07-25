@@ -92,40 +92,12 @@ def create_pset(signature):
     pset.addPrimitive(id_i, [int], int)
     pset.addPrimitive(id_t0_t3, [t0_t3], t0_t3)
 
-    def create_range(i, j):
-        """ Create a list integer from i to j"""
-        if i <= 0 or i >= j:
-            return []
-        elif i > 0 and j > i:
-            return list(range(i, j))
-        return []
     pset.addPrimitive(create_range, [int, int], IntList)
 
-    def subset_sel(i, j):
-        """Returns a function that selects a sub-string from element i to j"""
-        def new_subset(input_string):
-            if i >= 0 and j > i and len(input_string) >= j:
-                return input_string[i:j]
-            else:
-                return ""
-        return new_subset
     pset.addPrimitive(subset_sel, [int, int], t3_t3)
 
-    def subset_sel_1(v, i):
-        """
-        Returns a function that selects a substring, based on an end value
-        """
-        def new_subset(end):
-            if len(v) >= end and end > 0 and end >= i and i >= 0:
-                return v[i:end]
-            return ""
-
-        return new_subset
     pset.addPrimitive(subset_sel_1, [str, int], t0_t3)
 
-    def t0_t3_t(x):
-        """Return empty string"""
-        return ""
     pset.addTerminal(t0_t3_t, t0_t3)
 
     # Compare functions
@@ -149,9 +121,6 @@ def create_pset(signature):
     pset.addTerminal(comp_b(True), TypeI_TypeI)
     pset.addTerminal(comp_s(""), t3_TypeI)
 
-    def neg_int(number):
-        """Negates integer"""
-        return -number
     pset.addPrimitive(neg_int, [int], int)
     pset.addPrimitive(comp_i, [TypeI], TypeI)
 
@@ -171,9 +140,6 @@ def create_pset(signature):
     pset.addPrimitive(f_i, [IntList, t0_TypeI], IntList)
     pset.addPrimitive(f_s, [ListString, t3_TypeI], ListString)
 
-    def add_f_2(element, func):
-        """Executes func on element"""
-        return func(element)
     add_i = add_f("add_i")
 
     pset.addPrimitive(add_i, [int], t0_t0)
@@ -188,9 +154,6 @@ def create_pset(signature):
     pset.addPrimitive(map_s, [ListString, t3_t3], ListString)
     pset.addPrimitive(map_s_i, [IntList, t0_t3], ListString)
 
-    def map_add_terminal(map_terminal):
-        """Returns map function as it is"""
-        return map_terminal
     pset.addTerminal(map_add_terminal, t3_t3)
 
     # Length function ons differen types
@@ -216,3 +179,49 @@ def create_pset(signature):
     pset.addTerminal([], ListString)
 
     return pset
+
+# Functions for the DSL above
+
+def create_range(i, j):
+    """ Create a list integer from i to j"""
+    if i <= 0 or i >= j:
+        return []
+    elif i > 0 and j > i:
+        return list(range(i, j))
+    return []
+
+def map_add_terminal(map_terminal):
+    """Returns map function as it is"""
+    return map_terminal
+
+def add_f_2(element, func):
+    """Executes func on element"""
+    return func(element)
+
+def subset_sel_1(v, i):
+    """
+    Returns a function that selects a substring, based on an end value
+    """
+    def new_subset(end):
+        if len(v) >= end and end > 0 and end >= i and i >= 0:
+            return v[i:end]
+        return ""
+
+    return new_subset
+
+def subset_sel(i, j):
+    """Returns a function that selects a sub-string from element i to j"""
+    def new_subset(input_string):
+        if i >= 0 and j > i and len(input_string) >= j:
+            return input_string[i:j]
+        else:
+            return ""
+    return new_subset
+
+def t0_t3_t(x):
+    """Return empty string"""
+    return ""
+
+def neg_int(number):
+    """Negates integer"""
+    return -number

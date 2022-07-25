@@ -152,7 +152,7 @@ if __name__ == "__main__":
     a.append([substring, "end", ["str_input", "start"], str, IntList, "substring_end"])
     a.append([concat, "str_input_1", [], str, ListString, "concat_v"])
     a.append([concat, "str_input_2", ["str_input_1"], str, ListString, "concat_s"])
-    a.append([abs_pos, "k", ["str_input_1"], int, IntList, "abs_pos_k"])
+    a.append([abs_pos, "k", ["str_input"], int, IntList, "abs_pos_k"])
 
     creators_dic = {
         substring: "condition_creator_substring",
