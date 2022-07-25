@@ -8,14 +8,16 @@ For the genetic learning approach we rely heavily on the deap framework (see htt
 
 To install the required packages execute
 
-``pip install -r requirements``
 ``python setup.py install``
+
+``pip install -r requirements``
+
 
 # Quick Start 
 
 With 
 ``python evoWFs/metrics.py``
-we can evaluate learned witness functions and compare them to known witness functions. The learned witness functions are from the text domain and include operators like `Substring`
+we can evaluate learned witness functions and compare them to known witness functions. The learned witness functions are from the text domain and include operators like `Substring`. Previously learned functions in this framework can be found in `evoWFs/results/wf_for_cs.py` and evaluated with ``python evoWFs/metrics.py``.
 
 With 
 
@@ -36,7 +38,7 @@ In order to learn a witness function for a new operator, we have to follow four 
 * Combine all three parts similar to `evoWFs/math_operators/main_math.py` `evoWFs/text_operators/main_text.py` and start the learning procedure
 
 
-# References and Statistics 
+# Statistics 
 
 With 
 ``pygount --format=summary  probWFs`` 
@@ -46,4 +48,4 @@ With
 ``python -m pylint probWFs --disable=E1101``
 I get an score of 8.93
 
-In total I've executed 4 tests, with 27 LOC and get a coverage of 35\% if we execute `coverage report -m`
+In total I've executed 4 tests, with 27 LOC and get a coverage of 35\% (found out by we executing `coverage report -m`).
