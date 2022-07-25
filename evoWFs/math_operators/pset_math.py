@@ -1,148 +1,110 @@
 """
 Functions that define the DSL on which we use an evolutionary algorithm
-to learn the witnesss function.
+to learn the witness function.
 The DSL is designed to learn witness functions for operators that work on math data.
 See also following https://deap.readthedocs.io/
 """
-# import math
-# import random
-# import string
-# import operator
-
-# from deap import algorithms
-# from deap import base
-# from deap import creator
-# from deap import tools
 from deap import gp
 
-# import numpy
-
-# import copy
-
-# from typing import Dict, Tuple
-# import regex
-
-from evoWFs.type_classes import IntList, TypeConstructorFunction, TypeI
-
-# from evoWFs.function_creators import *
-# import types
-
-# import re
-
-UsefulRegexes = [r"\w+", r"\d+", r"\s+", r".+", r"$"]
+from evoWFs.type_classes import IntList, TypeConstructorFunction
 
 
 def create_pset(signature):
-    """Returns a primitive set for strongly typed genetic programming
+    """
+    Returns a primitive set for strongly typed genetic programming
     (see alsohttps://deap.readthedocs.io/en/master/examples/gp_spambase.html)
     The primitive set characterizes the DSL on which we learn
     the witness function.
     The argument signature describes the witness function (output type etc.)
+    Here we define a DSL in order to learn a witness function for math operations
     """
 
-    #    pset = gp.PrimitiveSetTyped("Main", [str, RegexTuple, int], int)
     pset = gp.PrimitiveSetTyped(
         "Main", signature.get_wf_input(), signature.get_wf_output()
     )
-    print("sig out", signature.get_wf_output())
-    print("sig in ", signature.get_wf_input())
 
+    # Use own parameter naming for learning problem
     pset.renameArguments(**signature.arg_set())
 
+    # Create function type that maps from one type to the same
     t0_t0 = TypeConstructorFunction("t0_t0")
-    # t0_TypeI = TypeConstructorFunction('t0_TypeI')
-    # TypeI_TypeI = TypeConstructorFunction('TypeI_TypeI')
-    # pset.context["t0_TypeI"] = t0_TypeI
-    # pset.context["TypeI_TypeI"] = TypeI_TypeI
 
-    pset.context["IntList"] = IntList  #
-    pset.context["int"] = int  #
+    # Define types for learning problem
+    pset.context["IntList"] = IntList
+    pset.context["int"] = int
     pset.context["t0_t0"] = t0_t0
 
     pset.addTerminal([], IntList)
     pset.addTerminal([0], IntList)
 
-    # pset.addTerminal(True, t0)
-    # pset.addTerminal(False, t0)
 
-    def id_int(a1):
+    def id_int(input_int):
         """
         Identity mapping for integers
         """
-        return a1
-
+        return input_int
     pset.addPrimitive(id_int, [int], int)
-
-    '''
-    def id_t0_t0(a2):
-        """
-        Identity mapping for int->int (functions that map int to int)
-        """
-        return a
-    '''
-
     pset.addPrimitive(id_int, [t0_t0], t0_t0)
 
-    def negate(a2):
+    def negate(input_int_neg):
         """
         Negate input integer
         """
-        return -a2
-
+        return - input_int_neg
     pset.addPrimitive(negate, [int], int)
 
-    def int_to_list(a4):
+    def int_to_list(input_int_to_list):
         """Takes input integer and wraps it in a list
         Argument:
-            a4: integer
+            input_int_to_list: integer
         Return
             list of one integer
         """
-        return [a4]
-
+        return [input_int_to_list]
     pset.addPrimitive(int_to_list, [int], IntList)
 
-    def execute(f1, b1):
-        return f1(b1)
-
+    def execute(func_1, element_1):
+        """Execute function func_1 on element_1"""
+        return func_1(element_1)
     pset.addPrimitive(execute, [t0_t0, int], int)
 
-    def addition(a5):
-        def add_f(b2):
-            return b2 + a5
-
+    def addition(summand_1):
+        """Returns function that ads input to summand_1"""
+        def add_f(summand_2):
+            """Return sum"""
+            return summand_1 + summand_2
         return add_f
-
     pset.addPrimitive(addition, [int], t0_t0)
 
-    def int_map(f2, l1):
+    def int_map(func, list_ints):
         """Represents map operator
         Arguments:
-            f2: Function that maps int to int
-            l1: list of ints
+            func: Function that maps int to int
+            list_ints: list of ints
         Return:
             List of ints
         """
-        return [f2(i) for i in l1]
-
+        return [func(i) for i in list_ints]
     pset.addPrimitive(int_map, [t0_t0, IntList], IntList)
 
-    def add_to_list(l2, a6):
+    def add_to_list(list_ints, element):
         """
         Extends list
         """
-        return l2 + [a6]
-
+        return list_ints + [element]
     pset.addPrimitive(add_to_list, [IntList, int], IntList)
 
-    def h(b1):
-        return b1
+    def id_t0_t0(func_element):
+        """
+        Identity function that maps function to same function
+        """
+        return func_element
+    pset.addTerminal(id_t0_t0, t0_t0)
 
-    pset.addTerminal(h, t0_t0)
-
-    for a7 in range(1, 10):
-        pset.addTerminal(a7, int)
-        pset.addTerminal(-a7, int)
+    # Add constant integers to pset
+    for i in range(1, 10):
+        pset.addTerminal(i, int)
+        pset.addTerminal(-i, int)
     pset.addTerminal(0, int)
 
     return pset

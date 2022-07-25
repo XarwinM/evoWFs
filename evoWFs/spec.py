@@ -9,9 +9,6 @@ for a given operator.
 import random
 import string
 
-# import evoWFs.dsl
-# from evoWFs.dsl import *
-# import evoWFs.flashFill
 from evoWFs.type_classes import RegexTuple, TypeII
 
 
@@ -20,8 +17,6 @@ from evoWFs.type_classes import RegexTuple, TypeII
 LETTERS = string.ascii_letters + "0123456789" + " " + " " + " "
 numbers = [e for e in range(10)] + [-e for e in range(1, 10)]
 UsefulRegexes = [r"\w+", r"\d+", r"\s+", r".+", r"$"]
-
-# SPACE_DIC = {'k':  int, 'v': str, 'start': int, 'end': int, 'rr':RegexTuple}
 
 # Parameters have a fixed, assigned type.
 # This correspondence is describe in the SPACE_DIC dictionary
@@ -40,16 +35,6 @@ SPACE_DIC = {
     "summand_1": int,
     "summand_2": int,
 }
-
-
-# Can be deleted???
-trainInput = {}
-for i in range(0, 70):
-    trainInput[i] = ""
-    for j in random.sample(
-        range(0, len(LETTERS) - 1), random.randint(1, len(LETTERS) - 1)
-    ):
-        trainInput[i] += LETTERS[j]
 
 
 def sample_space(space):
@@ -87,7 +72,7 @@ def data_create(operator, parameters, n_samples=25):
     Inputs to the operator are described via parameters, e.g. 'k', 'x'.
     Arguments:
         operator: operator/function to create input-output samples,
-        parameters:
+        parameters: Describes input-arguments of operator,
         n_samples: Amount of input-output samples to create
 
     Return:

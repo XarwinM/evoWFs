@@ -3,14 +3,8 @@ This module allows to learn a witness function for a given function.
 As a DSL for the evolutionary algorithm we employ a DSL that is specialized in the numerical domain
 (see evoWFs/math_operators/pset_math.py)
 """
-
-
 import operator
-
-# import math
 import random
-
-# import string
 
 import numpy
 
@@ -20,27 +14,12 @@ from deap import creator
 from deap import tools
 from deap import gp
 
-# import copy
-
-# import sys
-# sys.path.append("..")  # Adds higher directory to python modules path.
-
-# from flashFill import createPset
-# from regexFill import createPset
-# from regexDsl import createPset
 from evoWFs.math_operators.pset_math import create_pset
-
-# from regexFill_no_type import createPset
 from evoWFs.type_classes import IntList
 from evoWFs.math_operators.dsl_math import addition, OPERATOR_PARAMETER_DIC
-import evoWFs.spec as spec
-
-# import evoWFs.spec_new as spec
-# import regex
-
-from evoWFs.evaluation import Signature, Evaluation  # levenshtein
-
-from evoWFs.export_function import function_to_str, create_wf_file
+from evoWFs import spec
+from evoWFs.evaluation import Signature, Evaluation
+from evoWFs.export_function import function_to_str
 
 
 def create_signature(parameter, condi_params, wf_out_type, out_type):
@@ -55,28 +34,30 @@ def create_signature(parameter, condi_params, wf_out_type, out_type):
         input_sign[i] = spec.SPACE_DIC[i]
     input_sign["out"] = out_type
 
-    # return Signature(input_sign, spec.SPACE_DIC[parameter], parameter)
     return Signature(input_sign, wf_out_type, parameter)
 
 
 def function_learning(
-    operator_dsl,
     parameter="k",
     condi_params=[],
     wf_output_type=IntList,
     out_type=None,
 ):
+    """
+    Creates signature of learning problem (input/output-types to Witness function)
+    and important modules for the deap framework (pset, toolbox)
+    """
 
     # Create signature of learning problem
     signature = create_signature(parameter, condi_params, wf_output_type, out_type)
 
+    # Create DSL of learning problem
     pset = create_pset(signature)
 
     creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
     creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
 
     toolbox = base.Toolbox()
-    # toolbox.register("expr", gp.genGrow, pset=pset, min_=1, max_=4)
     toolbox.register("expr", gp.genGrow, pset=pset, min_=1, max_=8)
     toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -85,6 +66,9 @@ def function_learning(
 
 
 def training_single(toolbox):
+    """
+    Training of a single witness functions
+    """
     random.seed(318)
 
     pop = toolbox.population(n=1000)
@@ -137,7 +121,6 @@ def train(
         spec_train_cond, wf_parameter=parameter, condi_params=condi_params
     )
     signature, pset, toolbox = function_learning(
-        dsl_operator,
         parameter=parameter,
         condi_params=condi_params,
         wf_output_type=wf_output_type,
@@ -175,32 +158,23 @@ def train(
         # Enforces the new learned Witness function to be different from the previously learned WFs
         evaluation.add_learned_wf(func_learned)
 
-        # print('Leanred ', evaluation.learnedWFs[-1])
-        # if 1 in evaluation.lossLearnedWFs().values():
-        #    print('bei Abbruch: ', evaluation.lossLearnedWFs())
-        #    break
-    # print(evaluation.lossLearnedWFs())
     return evaluation.learned_wfs, signature
 
 
 if __name__ == "__main__":
 
-    #a = [[addition, "b", ["a"], int, IntList]]
-    a = [[addition, "summand_2", ["summand_1"], int, IntList]]
+    operator_candidates = [[addition, "summand_2", ["summand_1"], int, IntList]]
 
-    learned_wfs_str = ""
-    for t in a:
-        # learnedWFs, signature = train(subStr, parameter='start', condi_params=['x'], out_type=str)
-        learnedWFs, signature = train(*t)
+    LEARNED_WFS_STR = ""
+    for operator_candidate in operator_candidates:
+        learnedWFs, signature = train(*operator_candidate)
 
         tree = gp.PrimitiveTree(learnedWFs[-1])
-        # functions = gp.compile(tree, pset)
 
         input_vars = signature.input_types_wf.keys()
 
-        learned_wfs_str += function_to_str(
-            tree, input_vars, name=t[0].__name__, parameter=t[1]
+        LEARNED_WFS_STR += function_to_str(
+            tree, input_vars, name=operator_candidate[0].__name__, parameter=operator_candidate[1]
         )
 
-    print(learned_wfs_str)
-    # create_wf_file(out)
+    print(LEARNED_WFS_STR)

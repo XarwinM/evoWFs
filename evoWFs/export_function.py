@@ -1,6 +1,6 @@
 """
-This module contains functions that deal with learned functions.
-
+This module contains functions that deal with learned functions (in deap),
+e.g. save them or make them readable.
 """
 
 
@@ -10,10 +10,9 @@ def export_signature(signature):
     """
 
     ## Signature Creation
-    signature.getWFInput()[0].__name__
     signature_out = []
-    for s in signature.getWFInput():
-        signature_out.append(s)
+    for i in signature.getWFInput():
+        signature_out.append(i)
 
     signature_out.append(signature.getWFOutput())
     return signature_out
@@ -21,7 +20,8 @@ def export_signature(signature):
 
 def function_to_str(function, input_vars, name="", parameter=""):
     """
-    Creates a readable string, describing the function-argument (in deap)
+    Turns the input function (a deap object) into a string
+    that is readable
     """
 
     arguments = ""

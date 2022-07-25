@@ -1,7 +1,7 @@
 """
 This module provides functions to compare learned witness functions to
-known/ground truth witness functions. Furthermore functions to analyze
-the learned witness functions are provided, e.g. measure execution time.
+known/ground truth witness functions. Furthermore, it provides functions 
+to analyze the learned witness functions, e.g. measure execution time.
 """
 import re
 import time
@@ -16,18 +16,18 @@ from evoWFs.results.wf_for_cs import (  # pylint: disable=unused-import
 )
 from evoWFs.type_classes import IntList, ListString
 import evoWFs.spec_new as spec_new
-from evoWFs.text.dsl_text import substring, abs_pos, concat
+from evoWFs.text_operators.dsl_text import substring, abs_pos, concat
 
 
-def wf_true_substring_start(input_string, out):
+def wf_true_substring_start(str_input, out):
     """
     Expert witness function for substring operator
     and 'start' parameter
     """
-    return [m.start() for m in re.finditer(re.escape(out), input_string)]
+    return [m.start() for m in re.finditer(re.escape(out), str_input)]
 
 
-def wf_true_substring_end(input_string, start, out):  # pylint: disable=unused-argument
+def wf_true_substring_end(str_input, start, out):  # pylint: disable=unused-argument
     """
     Expert witness function for substring operator
     and 'end' parameter
@@ -35,12 +35,12 @@ def wf_true_substring_end(input_string, start, out):  # pylint: disable=unused-a
     return [start + len(out)]
 
 
-def wf_true_abs_pos_k(input_string, out):
+def wf_true_abs_pos_k(str_input, out):
     """
     Expert witness function for AbsPos operator
     and 'end' parameter
     """
-    return [out + 1, out - len(input_string) - 1]
+    return [out + 1, out - len(str_input) - 1]
 
 
 def wf_true_concat_v(out):
@@ -51,12 +51,12 @@ def wf_true_concat_v(out):
     return [out[0:i] for i in range(1, len(out))]
 
 
-def wf_true_concat_s(input_string, out):
+def wf_true_concat_s(str_input_1, out):
     """
     Expert witness function for concat operator
     and 'second' parameter
     """
-    return [out[len(input_string) :]]
+    return [out[len(str_input_1) :]]
 
 
 def measure_metric(
@@ -73,7 +73,7 @@ def measure_metric(
         operator: Operator for which witness function has been learned,
         witness_function: Learned witness function,
         spec_train: Training specification,
-        spec_train: Training specification for conditions,
+        spec_train_cond: Training data for witness function, i.e. input-outputs to wf,
         parameter: Parameter for which witness function has been learned,
         metric: Metric on how we evaluate the witness function
     Return:
@@ -142,17 +142,17 @@ def recall(retrieved, relevant):
 
 witness_fct_dic = {
     substring: {"start": wf_true_substring_start, "end": wf_true_substring_end},
-    concat: {"v": wf_true_concat_v, "s": wf_true_concat_s},
+    concat: {"str_input_1": wf_true_concat_v, "str_input_2": wf_true_concat_s},
     abs_pos: {"k": wf_true_abs_pos_k},
 }
 
 if __name__ == "__main__":
 
-    a = [[substring, "start", ["v"], str, IntList, "substring_start"]]
-    a.append([substring, "end", ["v", "start"], str, IntList, "substring_end"])  # works
-    a.append([concat, "v", [], str, ListString, "concat_v"])
-    a.append([concat, "s", ["v"], str, ListString, "concat_s"])
-    a.append([abs_pos, "k", ["v"], int, IntList, "abs_pos_k"])
+    a = [[substring, "start", ["str_input"], str, IntList, "substring_start"]]
+    a.append([substring, "end", ["str_input", "start"], str, IntList, "substring_end"])
+    a.append([concat, "str_input_1", [], str, ListString, "concat_v"])
+    a.append([concat, "str_input_2", ["str_input_1"], str, ListString, "concat_s"])
+    a.append([abs_pos, "k", ["str_input_1"], int, IntList, "abs_pos_k"])
 
     creators_dic = {
         substring: "condition_creator_substring",
@@ -188,10 +188,10 @@ if __name__ == "__main__":
         )
 
     # print(out_dic)
-    table = PrettyTable()
-    table.field_names = ["Operator and Parameter"] + list(out_dic[t[-1]].keys())
+    TABLE = PrettyTable()
+    TABLE.field_names = ["Operator and Parameter"] + list(out_dic[t[-1]].keys())
 
     for k in out_dic:
-        table.add_rows([[k] + list(out_dic[k].values())])
+        TABLE.add_rows([[k] + list(out_dic[k].values())])
 
-    print(table)
+    print(TABLE)

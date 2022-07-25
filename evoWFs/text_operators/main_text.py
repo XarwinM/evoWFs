@@ -15,7 +15,6 @@ from deap import tools
 from deap import gp
 
 from evoWFs.text_operators.pset_text import create_pset
-
 from evoWFs.type_classes import IntList, ListString
 from evoWFs.text_operators.dsl_text import (  # pylint: disable=unused-import
     substring,
@@ -24,18 +23,19 @@ from evoWFs.text_operators.dsl_text import (  # pylint: disable=unused-import
     abs_pos,
 )
 import evoWFs.spec_new as spec_new
-
 from evoWFs.evaluation import Evaluation
-
 from evoWFs.export_function import create_wf_file, function_to_str
-
 from evoWFs.math_operators.main_math import create_signature
 
 
 def function_learning(
     operator_dsl, parameter="k", condi_params=[], wf_output_type=IntList, out_type=None
 ):
-    """ """
+    """
+    Creates signature of learning problem (input/output-types to Witness function)
+    and important modules for the deap framework (pset, toolbox)
+    ToDO: Merge with function_learning in evoWFs/matth_operators/main_math.py
+    """
 
     # Create Signature of learning problem
     signature = create_signature(parameter, condi_params, wf_output_type, out_type)
@@ -54,6 +54,9 @@ def function_learning(
 
 
 def training_single(toolbox):
+    """
+    Training of a single witness function
+    """
     random.seed(318)
 
     pop = toolbox.population(n=1000)
@@ -75,7 +78,7 @@ def training_single(toolbox):
 
 
 def train(
-    dsl_operator, parameter="k", condi_params=[], out_type=None, wf_output_type=IntList
+    dsl_operator, parameter="k", condi_params=[], out_type=None, wf_output_type=IntList, num_wfs=1
 ):
     """
     Evolutionary Optimization for witness function for a certain parameter and a given operator
@@ -92,7 +95,7 @@ def train(
         - Signature object (see evaluation.py)
     """
 
-    # spec_train_cond = spec.data_create(dsl_operator, OPERATOR_PARAMETER_DIC[dsl_operator])
+    # Create training data for witness function
     spec_train, spec_train_cond = spec_new.create_conditions(
         dsl_operator,
         wf_parameter=parameter,
@@ -107,6 +110,7 @@ def train(
         out_type=out_type,
     )
 
+    # Define Evaluation
     evaluation = Evaluation(
         [],
         parameter=signature.parameter,
@@ -129,14 +133,11 @@ def train(
         "mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=17)
     )
 
-    for _ in range(0, 1):
+    for _ in range(0, num_wfs):
         func_learned = training_single(toolbox)
+
+        # Add learned witness function to evaluation
         evaluation.add_learned_wf(func_learned)
-        print("Leanred ", evaluation.learned_wfs[-1])
-        if 1 in evaluation.loss_learned_wfs().values():
-            print("bei Abbruch: ", evaluation.loss_learned_wfs())
-            break
-    # print(evaluation.lossLearnedWFs())
     return evaluation.learned_wfs, signature
 
 

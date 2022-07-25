@@ -1,4 +1,7 @@
-"""Operators of the text domain. For each of these operators we aim to learn a witness function"""
+"""
+Operators of the text domain. These operators are from the Substring DSL.
+For each of these operators we aim to learn a witness function
+"""
 
 
 def const_str(str_input):
@@ -23,6 +26,8 @@ def abs_pos(str_input, k):
     return k - 1
 
 
+# Dictionary that describes parameters and their names
+# of the text operators
 OPERATOR_PARAMETER_DIC = {
     abs_pos: ["str_input", "k"],
     substring: ["str_input", "start", "end"],

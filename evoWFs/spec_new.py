@@ -8,8 +8,6 @@ import random
 
 from evoWFs.spec import LETTERS
 
-
-
 def create_random_int_substr(x_str, cond=[]):
     """
     Creates a random integer value which serves as

@@ -1,7 +1,7 @@
 """
 Custom Types for Type Based genetic Programming. Most types do not have special properties.
 But they allow to distinguish whether two objects are from the same type.
-So we can tell for instancewhether two list objects contain only integer or string.
+So we can tell for instance whether two list objects contain only integer or string.
 """
 import regex
 
@@ -84,8 +84,8 @@ class ListString(list):
 
 class RegexTuple:
     """
-    Custom type. Inherits from list and each object of
-    IntList hast elements of same type.
+    Custom type. Constitutes Tuple for regexes. 
+    RegexTuplehas elements of same type.
     """
     def __init__(self, reg1, reg2):
         self.tup = (reg1, reg2)

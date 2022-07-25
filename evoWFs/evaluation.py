@@ -1,7 +1,8 @@
 """
-Module contains evaluation dynamics.
+Module contains evaluation function necessary for optimization
+algorithm in deap.
 With the evaluation we assign a loss-value to a function.
-The deap-framework aims to find a function with minimial loss
+The deap-framework aims to find a function with minimal loss
 employing evolutionary algorithms.
 """
 
@@ -10,8 +11,8 @@ class Signature:
     """A class that describes the 'signature' of a witness function,
     i.e. the input type, the output type and the parameters.
     Arguments:
-        input_types_dic: A dictionary with parameters as keys and corresponding types as values
-        parameter: String that describes parameter
+        input_types_dic: A dictionary with parameters as keys and corresponding types as values,
+        parameter: String that describes parameters of function,
         wf_out_type: Type of Witness Function output
     """
 
@@ -46,19 +47,20 @@ class Signature:
         The dictionary describes the types of the inputs to the witness function
         """
         arg_set = {}
-        for i, a in enumerate(self.input_types_wf.keys()):
-            arg_set["ARG{}".format(i)] = a
+        for i, j in enumerate(self.input_types_wf.keys()):
+            arg_set["ARG{}".format(i)] = j
         return arg_set
 
 
 class Evaluation:
     """Class to evaluate a candidate program
     Arguments:
-        learnedWFs: A list of learned Witness Functions. Usually the list is empty in the beginning.
+        learned_wfs: A list of learned Witness Functions for a given operator.
+            Usually the list is empty in the beginning.
         parameter: Parameter of learned witness function (given an output and conditions,
-            we aim to find possibile inputs for this parameter)
-        spec_train_cond: Input-Output examples for th conditions
-        spec_train: Input-Output examples ???
+            we aim to find possible inputs for this parameter)
+        spec_train_cond: Input-Output examples for the witness function,
+        spec_train: all training data, i.e. all inputs to operator and its outputs,
         operator: Function/Operator for which we learn Witness Function
         length_weight: Weight of how strongly a lengthy function is punished
         length_output_weight: Witness Functions return a set.
@@ -74,16 +76,9 @@ class Evaluation:
         spec_train=None,
         operator=None,
         toolbox=None,
-        spec_train_full=None,
         length_weight=0.2,
         length_output_weight=0.05,
     ):
-
-        if spec_train_full is None:
-            self.spec_train_full = spec_train_cond
-        else:
-            self.spec_train_full = spec_train_full
-
         self.learned_wfs = learned_wfs
 
         # Parameter for which we learn the witness function, i.e.
@@ -128,18 +123,18 @@ class Evaluation:
 
     def eval_spec(self, individual, spec):
         """
-        Compute loss on all training data
+        Compute total loss (inclusive Occam's razor) on all training data
         """
         witness_function = self.toolbox.compile(expr=individual)
 
-        # If current witness function matches a previosly learned one
+        # If current witness function matches a previously learned one
         # Matching is measured whether both witness functions comply on the test set
         # If both functions matches we induce a high loss in order to encourage
         # the algorithm to learn a new witness function
         if self.wf_compare(witness_function, spec):
             return (100,)
 
-        # If witness_function is different than previosly learned ones
+        # If witness_function is different than previously learned ones
 
         # Loss of witness_function on trainings set
         loss = self.loss(witness_function)
@@ -151,7 +146,7 @@ class Evaluation:
         return (loss,)
 
     def add_learned_wf(self, witness_function):
-        """Collect newly learned witness function to previosly learned ones"""
+        """Collect newly learned witness function to previously learned ones"""
         self.learned_wfs.append(witness_function)
 
     def wf_compare(self, witness_function, spec):
@@ -164,10 +159,10 @@ class Evaluation:
         for learned_wf in self.learned_wfs:
             index_wf_current = 0  # Index
             index_wf_old = 0
-            for _, a in enumerate(spec.keys()):
+            for _, i in enumerate(spec.keys()):
                 index_wf_current += 1
                 witness_arg = {}
-                witness_arg = self.spec_train_cond[a].copy()
+                witness_arg = self.spec_train_cond[i].copy()
                 old_wf = self.toolbox.compile(expr=learned_wf)
                 if witness_function(**witness_arg) == old_wf(**witness_arg):
                     index_wf_old += 1
