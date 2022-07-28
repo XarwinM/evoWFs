@@ -46,10 +46,10 @@ The data for the training and evaluation is defined in `evoWFs/spec_new.py`. For
 
 With 
 ``pygount --format=summary  evoWFs`` 
-I have counted the LOC of this repository and obtained 880 LOC and
+I have counted the LOC of this repository and obtained 879 LOC and
 
 With 
 ``python -m pylint evoWFs --disable=E1101``
-I get a score of 8.93
+I get a score of 8.11
 
 In total I've executed 4 tests, with 27 LOC and get a coverage of 35\% (found out by we executing `coverage report -m`).
